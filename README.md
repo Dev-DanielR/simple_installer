@@ -5,7 +5,7 @@ A simple utility that installs dependencies declared on a manifest file.
 The recommended way to use this utility is grab a copy of the install.js file and run it from the root of your project.
 ```sh
 cd /path/to/project
-curl -O https://raw.githubusercontent.com/Dev-DanielR/simple_installer/src/install.js
+curl -O https://raw.githubusercontent.com/Dev-DanielR/simple_installer/master/install.js
 node install.js
 ```
 
