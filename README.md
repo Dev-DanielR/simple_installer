@@ -9,6 +9,8 @@ curl -O https://raw.githubusercontent.com/Dev-DanielR/simple_installer/master/in
 node install.js
 ```
 
+The installer script is in CommonJS so if your project uses node with "type" set to "module" you might need to rename the file extension to `cjs` to avoid runtime conflicts.
+
 ## Manifest file
 
 The manifest file should be named `manifest.json` and it should be located in the root of your project.
