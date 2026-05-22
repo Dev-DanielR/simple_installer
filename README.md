@@ -2,11 +2,18 @@
 
 A simple utility that installs dependencies declared on a manifest file.
 
+## Installation
+
 The recommended way to use this utility is grab a copy of the install.js file and run it from the root of your project.
 ```sh
 cd /path/to/project
 curl -O https://raw.githubusercontent.com/Dev-DanielR/simple_installer/src/install.js
 node install.js
+```
+
+Additionally, you can opt to install specific dependencies from the list by adding the dependency names as command arguments:
+```sh
+node install.js starter-template express
 ```
 
 ## Manifest file

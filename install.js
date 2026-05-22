@@ -1,7 +1,14 @@
-const { spawnSync } = require('child_process');
-const { mkdirSync, rmSync, existsSync, cpSync } = require('fs');
-const { join } = require('path');
+const { spawnSync } = require('node:child_process');
+const { mkdirSync, rmSync, existsSync, cpSync } = require('node:fs');
+const { join } = require('node:path');
 const manifest = require('./manifest.json');
+
+// FILTER DEPENDENCIES VIA CLI =========================================================================================
+
+const deps = new Set(process.argv.slice(2));
+
+const dependenciesToInstall = (deps.length == 0) ? manifest.dependencies
+    : manifest.dependencies.filter(dep => deps.has(dep.name));
 
 // VALIDATE EXTERNAL TOOLS =============================================================================================
 
@@ -20,7 +27,7 @@ const providerTools = {
 };
 
 const neededTools = new Set();
-for (const dep of manifest.dependencies) {
+for (const dep of dependenciesToInstall) {
     const tools = providerTools[dep.provider];
     if (tools) tools.forEach(t => neededTools.add(t));
 }
@@ -53,7 +60,7 @@ if (errors.length > 0) {
     process.exit(1);
 }
 
-manifest.dependencies.forEach((dep, idx) => {
+dependenciesToInstall.forEach((dep, idx) => {
     for (const field of ['provider', 'name', 'path']) {
         if (!Validate.string(dep, field)) {
             errors.push(`Dependency "${dep.name || idx}": Missing or empty "${field}".`);
@@ -120,7 +127,7 @@ try {
     tempDir = manifest.tempDir;
     if (!existsSync(tempDir)) mkdirSync(tempDir, { recursive: true });
 
-    for (const { provider, name, path, url, extract = [] } of manifest.dependencies)  {
+    for (const { provider, name, path, url, extract = [] } of dependenciesToInstall)  {
         const fullPath = join(path, name);
         mkdirSync(path, { recursive: true });
 
@@ -131,7 +138,7 @@ try {
                 break;
             }
             case 'pip' : {
-                if (url && url.endsWith('.txt')) {
+                if (url?.endsWith('.txt')) {
                     runCommand('pip', 'install', '-r', url, '--target', fullPath);
                 } else {
                     runCommand('pip', 'install', name, '--target', fullPath);
